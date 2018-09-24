@@ -1,30 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using HGVServiceAuth.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
+using Microsoft.Graph;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace HGVServiceAuth.Controllers
 {
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<List<string>> Get()
+        public async Task<IActionResult> Get()
         {
-            List<string> claimsList = new List<string>();
-            var claims = HttpContext.User.Claims;
-            //return new string[] { "value1", "value2" };
-            foreach(var claim in claims)
+
+            try
             {
-                claimsList.Add(claim.Type+"->"+claim.Value);
+                var graphserviceClient = GraphServiceProvider.ClientProvider();
+                
+                if(graphserviceClient != null)
+                {
+                    var userInfo = await graphserviceClient.Users.Request().Select("country,city,state,displayname,userprincipalname").GetAsync();
+
+                    List<string> claimsList = new List<string>();
+                    var claims = HttpContext.User.Claims;
+                    foreach (var claim in claims)
+                    {
+                        claimsList.Add(claim.Type + "->" + claim.Value);
+                        if (claim.Type.Contains("upn"))
+                        {
+                            foreach (var user in userInfo)
+                            {
+                                if (user.UserPrincipalName.Equals(claim.Value))
+                                {
+                                    claimsList.Add("Country -> " + user.Country);
+                                    claimsList.Add("City -> " + user.City);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    return Ok(claimsList);
+                }
+                return BadRequest();
+
             }
-            return claimsList;
+            catch(Exception ex)
+            {
+                return BadRequest();
+            }
+            
         }
 
         // GET api/values/5

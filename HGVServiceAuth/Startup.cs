@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using HGVServiceAuth.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -46,10 +47,8 @@ namespace HGVServiceAuth
             })
             .AddJwtBearer(options =>
             {
-                options.Authority = "https://login.microsoftonline.com/41814658-1358-4ce7-b93d-bc3fce646e07";
-                //Configuration["AppSettings:Authentication:AzureAd:AADInstance"]+Configuration["AppSettings:Authentication:AzureAd:TenantId"];
-                options.Audience = "d1cb9241-6542-4627-a9fc-2958c0bfc6af";
-                //Configuration["AppSettings:Authentication:AzureAd:ClientId"];
+                options.Authority = ConfigurationReader.AppSetting["Authentication:AzureAd:AADInstance"] + ConfigurationReader.AppSetting["Authentication:AzureAd:TenantId"]; //pass tenant ID here
+                options.Audience = ConfigurationReader.AppSetting["Authentication:AzureAd:Audience"];
                 options.Events = new JwtBearerEvents()
                 {
 
@@ -61,14 +60,10 @@ namespace HGVServiceAuth
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters {
                     ValidateIssuer = true,
-                    ValidIssuer = "41814658-1358-4ce7-b93d-bc3fce646e07",
+                    ValidIssuer = ConfigurationReader.AppSetting["Authentication:AzureAd:TenantId"],
                     ValidateAudience = true,
-                    ValidAudience = "d1cb9241-6542-4627-a9fc-2958c0bfc6af",
-                    //IssuerSigningKey = new RsaSecurityKey(new RSACryptoServiceProvider(2048).ExportParameters(true))
-                    //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("jEJb19FoczzPzNTvwW2q7HzY847geIYVUkYqY5r9+fk="))
+                    ValidAudience = ConfigurationReader.AppSetting["Authentication:AzureAd:Audience"]
                 };
-                //options.SaveToken = true;
-
             });
 
             services.AddAuthorization(options =>
@@ -95,20 +90,6 @@ namespace HGVServiceAuth
 
             app.UseCors("EnableCors");
             app.UseAuthentication();
-
-            //app.UseJwtBearerAuthentication(new JwtBearerOptions
-            //{
-            //    Authority = Configuration["AppSettings:Authentication:AzureAd:AADInstance"]
-            //    + Configuration["AppSettings:Authentication:AzureAd:TenantId"],
-            //    Audience = Configuration["AppSettings:Authentication:AzureAD:ClientId"],
-            //    TokenValidationParameters =
-            //    new TokenValidationParameters
-            //    {
-            //        ValidIssuer =
-            //        Configuration["AppSettings:Authentication:AzureAd:AADInstance"]
-            //      + Configuration["AppSettings:Authentication:AzureAd:TenantId"] + "/ v2.0"
-            //    }
-            //});
 
             app.UseHttpsRedirection();
             app.UseMvc();
