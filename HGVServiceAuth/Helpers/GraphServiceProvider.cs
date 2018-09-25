@@ -12,6 +12,7 @@ namespace HGVServiceAuth.Helpers
     {
         public static GraphServiceClient ClientProvider()
         {
+            
             AuthenticationContext authContext = new AuthenticationContext(ConfigurationReader.AppSetting["Authentication:AzureAd:AADInstance"] + ConfigurationReader.AppSetting["Authentication:AzureAd:TenantId"]);
             var accessToken = authContext.AcquireTokenAsync(ConfigurationReader.AppSetting["Authentication:AzureAd:GraphEndpoint"], new ClientCredential(ConfigurationReader.AppSetting["Authentication:AzureAd:Audience"], ConfigurationReader.AppSetting["Authentication:AzureAd:SecretKey"])).Result.AccessToken;
 
