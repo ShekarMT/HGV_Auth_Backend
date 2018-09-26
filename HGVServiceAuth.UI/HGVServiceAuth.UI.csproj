@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
@@ -8,10 +8,22 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ClientApp\" />
   </ItemGroup>
+
+
+  <!--<Target Name="Build Angular Debug" Condition="'$(Configuration)'=='Debug'" BeforeTargets="Build">
+    <Message Text="* * * * * * Building Debug Angular App * * * * * *" Importance="high" />
+    <Exec Command="ng build" />
+  </Target>-->
+
+  <!--<Target Name="Build Angular Release" Condition="'$(Configuration)'=='Release'" BeforeTargets="Build">
+    <Message Text="* * * * * * Building Release Angular App * * * * * *" Importance="high" />
+    <Exec Command="ng build" />
+  </Target>-->
 
 </Project>

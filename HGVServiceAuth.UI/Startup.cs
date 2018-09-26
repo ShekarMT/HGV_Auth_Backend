@@ -38,7 +38,7 @@ namespace HGVServiceAuth.UI
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/dist";
+                configuration.RootPath = "ClientApp/dist/MSALAuthentication";
             });
         }
 
@@ -69,10 +69,10 @@ namespace HGVServiceAuth.UI
 
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
-                {
+                //if (env.IsDevelopment())
+                //{
                     spa.UseAngularCliServer(npmScript: "start");
-                }
+                //}
             });
         }
     }
