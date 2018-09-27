@@ -68,8 +68,8 @@ namespace HGVServiceAuth
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("OnlyAdminAccess", policy => policy.RequireRole("Admin"));
-                options.AddPolicy("OnlyUserAccess", policy => policy.RequireRole("User"));
+                options.AddPolicy("OnlyInventoryManagerAccess", policy => policy.RequireRole("InventoryManager"));
+                options.AddPolicy("OnlyPremiumAgentAccess", policy => policy.RequireRole("PremiumAgent"));
 
             });
 

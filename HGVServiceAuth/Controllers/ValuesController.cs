@@ -14,13 +14,14 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace HGVServiceAuth.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "InventoryManager,PremiumAgent")]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
         // GET api/values
         [HttpGet]
+        [Route("GetClaimListForUser")]
         public async Task<IActionResult> Get()
         {
 
@@ -63,10 +64,26 @@ namespace HGVServiceAuth.Controllers
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpGet]
+        [Route("GetUserRole")]
+        public async Task<IActionResult> GetClaim()
         {
-            return "value";
+            try
+            {
+                var claims = HttpContext.User.Claims;
+                foreach (var claim in claims)
+                {
+                    if (claim.Type.Contains("role"))
+                    {
+                        return Ok(claim.Value.ToString());
+                    }
+                }
+                return NotFound("Not Assigned");
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         // POST api/values
