@@ -14,7 +14,7 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace HGVServiceAuth.Controllers
 {
-    [Authorize(Roles = "InventoryManager,PremiumAgent")]
+    [Authorize(Roles = "InventoryManager,PremiumSpecialist")]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
