@@ -10,11 +10,11 @@ namespace HGVServiceAuth.Helpers
 {
     public static class GraphServiceProvider
     {
-        public static GraphServiceClient ClientProvider()
+        public static GraphServiceClient ClientProvider(string accessToken)
         {
             
-            AuthenticationContext authContext = new AuthenticationContext(ConfigurationReader.AppSetting["Authentication:AzureAd:AADInstance"] + ConfigurationReader.AppSetting["Authentication:AzureAd:TenantId"]);
-            var accessToken = authContext.AcquireTokenAsync(ConfigurationReader.AppSetting["Authentication:AzureAd:GraphEndpoint"], new ClientCredential(ConfigurationReader.AppSetting["Authentication:AzureAd:Audience"], ConfigurationReader.AppSetting["Authentication:AzureAd:SecretKey"])).Result.AccessToken;
+            //AuthenticationContext authContext = new AuthenticationContext(ConfigurationReader.AppSetting["Authentication:AzureAd:AADInstance"] + ConfigurationReader.AppSetting["Authentication:AzureAd:TenantId"]);
+            //var accessToken = authContext.AcquireTokenAsync(ConfigurationReader.AppSetting["Authentication:AzureAd:GraphEndpoint"], new ClientCredential(ConfigurationReader.AppSetting["Authentication:AzureAd:Audience"], ConfigurationReader.AppSetting["Authentication:AzureAd:SecretKey"])).Result.AccessToken;
 
             if (!string.IsNullOrEmpty(accessToken))
             {
@@ -22,7 +22,7 @@ namespace HGVServiceAuth.Helpers
                 new DelegateAuthenticationProvider(
                     requestMessage =>
                     {
-                        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", accessToken);
+                        requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", accessToken.Split(" ")[1].ToString());
 
                         return Task.FromResult(0);
                     }));

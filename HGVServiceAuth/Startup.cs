@@ -59,13 +59,14 @@ namespace HGVServiceAuth
                 };
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters {
-                    ValidateIssuer = true,
+                    ValidateIssuer = false,
                     ValidIssuer = ConfigurationReader.AppSetting["Authentication:AzureAd:TenantId"],
                     ValidateAudience = true,
                     ValidAudience = ConfigurationReader.AppSetting["Authentication:AzureAd:Audience"]
                 };
             });
 
+            //Defining Policies for implementing Authorization on the Resources
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("OnlyInventoryManagerAccess", policy => policy.RequireRole("InventoryManager"));

@@ -27,29 +27,34 @@ namespace HGVServiceAuth.Controllers
 
             try
             {
-                var graphserviceClient = GraphServiceProvider.ClientProvider();
+                var accessToken = Request.Headers["Authorization"];
+
+                var graphserviceClient = GraphServiceProvider.ClientProvider(accessToken);
                 
                 if(graphserviceClient != null)
                 {
-                    var userInfo = await graphserviceClient.Users.Request().Select("country,city,state,displayname,userprincipalname").GetAsync();
+                    //var userInfo = await graphserviceClient.Users.Request().Select("country,city,state,displayname,userprincipalname").GetAsync();
 
                     List<string> claimsList = new List<string>();
                     var claims = HttpContext.User.Claims;
                     foreach (var claim in claims)
                     {
                         claimsList.Add(claim.Type + "->" + claim.Value);
-                        if (claim.Type.Contains("upn"))
-                        {
-                            foreach (var user in userInfo)
-                            {
-                                if (user.UserPrincipalName.Equals(claim.Value))
-                                {
-                                    claimsList.Add("Country -> " + user.Country);
-                                    claimsList.Add("City -> " + user.City);
-                                    break;
-                                }
-                            }
-                        }
+
+                        #region Snippet to access Graph
+                        //if (claim.Type.Contains("upn"))
+                        //{
+                        //    foreach (var user in userInfo)
+                        //    {
+                        //        if (user.UserPrincipalName.Equals(claim.Value))
+                        //        {
+                        //            claimsList.Add("Country -> " + user.Country);
+                        //            claimsList.Add("City -> " + user.City);
+                        //            break;
+                        //        }
+                        //    }
+                        //}
+                        #endregion
                     }
                     return Ok(claimsList);
                 }
